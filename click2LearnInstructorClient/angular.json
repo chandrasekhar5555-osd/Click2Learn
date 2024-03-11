@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "click2LearnClient": {
+    "click2LearnInstructorClient": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/click2-learn-client",
+            "outputPath": "dist/click2-learn-instructor-client",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -59,16 +59,16 @@
               "namedChunks": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "click2LearnClient:build:production"
+              "browserTarget": "click2LearnInstructorClient:build:production"
             },
             "development": {
-              "browserTarget": "click2LearnClient:build:development"
+              "browserTarget": "click2LearnInstructorClient:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "click2LearnClient:build"
+            "browserTarget": "click2LearnInstructorClient:build"
           }
         },
         "test": {
