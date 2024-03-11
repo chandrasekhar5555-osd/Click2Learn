@@ -23,6 +23,7 @@ jobs:
 
       - name: npm install, build, and test
         run: |
+          cd click2LearnInstructorClient
           npm install
           npm run build --if-present
           npm run test --if-present
@@ -31,7 +32,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: /click2LearnInstructorClient/dist/click2-learn-instructor-client/
+          path: click2LearnInstructorClient/dist/click2-learn-instructor-client/
 
   deploy:
     runs-on: ubuntu-latest
