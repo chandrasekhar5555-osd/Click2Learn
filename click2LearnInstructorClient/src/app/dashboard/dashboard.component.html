@@ -1,1 +1,58 @@
-<p>dashboard works!</p>
+<div class="container">
+    <img class="main-dashboard-img" src="../../assets/images/dashboardmain.jpg" alt="dashboard" />
+</div>
+<div class="container" style="background-color: #EAE6E1;">
+    <div class="w-100 my-4">
+        <div class="w-100" style="text-align: center;">
+            <h1 style="font-weight: bolder;">Explore our recent educational<br> courses</h1>
+        </div>
+        <div class="courseslist-container mb-4">
+            <div *ngFor="let course of coursesList" class="w-25">
+                <img class="courseslist" src="../../assets/images/dashboardmain.jpg" alt="dashboard" />
+                <a routerLink="/courses" class="course-name">{{ course.course }}</a>
+                <h5 class="course-name">${{ course.price }}</h5>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-lg book-appoint fs-4" style="margin-left: 37%;">BROWSE ALL COURSES...</button>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <img class="main-dashboard-img" src="../../assets/images/dashboardmain.jpg" alt="dashboard" />
+        </div>
+        <div class="col-md-6">
+            <div style="padding: 20px;" class="m-4">
+                <h1 style="font-weight: bolder; font-size: 45px;">Empower your learning <br> with a complimentary <br> consultation</h1>
+                <h4>Extend a warm invitation to your participants as you articulate your teaching philosophy and the distinguishing aspects of your educational approach.</h4>
+                <button type="button" class="btn btn-primary btn-lg book-appoint fs-4 mt-4" style="margin-left: 25%;">BOOK CONSULTATION</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container w-100" style="background-color: #EAE6E1;">
+    <div class="row" style="margin: 120px 10px">
+        <div class="col-md-5">
+                <h1 style="font-weight: bolder; font-size: 40px;" class="mb-4">Welcome to Click2Learn</h1>
+                <h4 class="mt-2">Empower your learning experience by exploring our educational resources and connect with us to enhance your teaching journey. Choose the best method to share your feedback and ideas with us. We value your input!</h4>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-6">
+            <form action="#" method="post">
+                <div class="form-group fs-4 mb-4">
+                    <label for="email" style="font-weight: 600;">Email <span class="form-required">(required)</span></label>
+                    <input type="email" style="border-radius: 10px;" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group fs-4">
+                    <label for="message" style="font-weight: 600;">Message <span class="form-required">(required)</span></label>
+                    <textarea class="form-control" style="border-radius: 10px;" rows="5" id="message" name="message" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg book-appoint fs-4 mt-4">SEND</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container my-3 w-100" style="text-align: right !important;">
+    <strong>click2learn</strong>
+ </div>
+ 
