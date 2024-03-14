@@ -1,0 +1,8 @@
+<div id="wrapper">
+    <div id="content-wrapper" class="d-flex flex-column main_layout">
+        <div id="content" class="main_content">
+            <app-navbar *ngIf="userLoggedIn || onMenuShow" (logoutUser)="userLoggedIn = $event"></app-navbar>
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>
