@@ -15,7 +15,7 @@ export class NavbarComponent {
   userName: string = '';
 
   constructor(private router: Router) {
-    this.userName = localStorage.getItem('username') || '';
+    this.userName = localStorage.getItem('username') || 'Praveen';
   }
 
   logout(){

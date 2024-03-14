@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'Gopper';
+    src: url('Gopher-Light.woff2') format('woff2'), 
+         url('Gopher-Regular.woff2') format('woff2'),
+         url('Gopher-Medium.woff2') format('woff2');
+    /* Add more formats if necessary */
+    font-weight: normal;
+    font-style: normal;
+  }
+  
