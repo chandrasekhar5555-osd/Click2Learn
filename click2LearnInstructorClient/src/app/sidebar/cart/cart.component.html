@@ -1,1 +1,44 @@
-<p>cart works!</p>
+<!-- cart.component.html -->
+
+<!-- cart.component.html -->
+<div class="cart-container" [ngClass]="{ 'grey-theme': isGreyTheme, 'black-theme': !isGreyTheme }">
+    <h4 style="font-weight: bold">Courses</h4>
+    <div class="item-container">
+        <div class="item" *ngFor="let item of items">
+            <div class="item-details">
+                <div class="item-name">{{ item.name }}</div>
+            </div>
+            <div class="item-box" style="float: right;">
+                <img src="../../assets/images/dashboardmain.jpg" alt="{{ item.name }}" class="item-image"
+                    style="width: 180px; height: 80px" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cart-container" [ngClass]="{ 'grey-theme': isGreyTheme, 'black-theme': !isGreyTheme }">
+    <br>
+    <h4 style="font-weight: bold">Ordered Books</h4>
+    <div class="item" *ngFor="let item of items">
+        <div class="item-name">{{ item.name }} Material</div>
+        <div class="item-count">
+            <button (click)="decrementItem(item)">-</button>
+            <span>{{ item.quantity }}</span>
+            <button (click)="incrementItem(item)">+</button>
+        </div>
+    </div>
+    <br> {{amount}}
+    <button type="button" class="btn btn-primary btn-lg book-appoint" style="border-radius: 2px; float: right;"
+        (click)="renderCreditCardPayment()">Buy
+        now</button>
+    <br>
+    <br>
+</div>
+
+<!-- PayPal Popup -->
+<div class="paypal-popup" #paypalPopup>
+    <div class="paypal-popup-content">
+        <!-- <span class="close" style="font-size: 70px; display: block;" (click)="closePaypalPopup()">&times;</span> -->
+        <div id="paypal-button-container"></div>
+    </div>
+</div>
