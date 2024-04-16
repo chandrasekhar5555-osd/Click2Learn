@@ -44,7 +44,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       //timeOut: 10000,
-      positionClass: 'toast-top-right',
+      positionClass: 'toast-bottom-right',
       //preventDuplicates: true,
     }),
   ],

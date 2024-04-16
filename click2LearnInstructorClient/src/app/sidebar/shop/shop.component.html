@@ -1,1 +1,67 @@
-<p>shop works!</p>
+<div class="course-container">
+    <div class="course-card" *ngFor="let course of courses" data-bs-toggle="modal"
+        [attr.data-bs-target]="'#courseModal' + course.id">
+        <img class="course-image" [src]="course.image" [alt]="course.title" />
+        <div class="course-info">
+            <h2 class="course-title">{{ course.title }}</h2>
+            <p class="course-description">{{ course.description }}</p>
+            <span class="price" style="cursor: pointer;">View Course</span>
+        </div>
+    </div>
+    <div *ngIf="courses.length == 0" style="font-size: 35px; margin-top: 10%;"> No Enrolled Courses
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" tabindex="-1" role="dialog" aria-labelledby="courseModalLabel" aria-hidden="true"
+    *ngFor="let course of courses" [attr.id]="'courseModal' + course.id">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="courseModalLabel">{{ course.title }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <iframe width="100%" height="315" [src]="getSafeVideoUrl(course.videoId)" frameborder="0"
+                    allowfullscreen></iframe>
+                <p>{{ course.description }}</p>
+                <p>
+                    Rating: {{ course.rating }} ({{ course.numberOfRatings }} ratings)
+                </p>
+                <p>Created by: {{ course.createdBy }}</p>
+                <p>Last updated: {{ course.lastUpdated }}</p>
+                <p>This course includes:</p>
+                <ul>
+                    <li>{{ course.courseDetails.hours }}</li>
+                    <li>{{ course.courseDetails.codingExercises }} coding exercises</li>
+                    <li>{{ course.courseDetails.articles }} article</li>
+                    <li>
+                        {{ course.courseDetails.downloadableResources }} downloadable
+                        resources
+                    </li>
+                    <li>{{ course.courseDetails.accessibility }}</li>
+                    <li *ngIf="course.courseDetails.certificate">
+                        Certificate of completion
+                    </li>
+                </ul>
+                <!-- Accordion Section -->
+                <div class="accordion-container">
+                    <div *ngFor="let section of course.sections">
+                        <button class="accordion-button w-100" type="button" [class.collapsed]="!section.isContentOpen"
+                            (click)="toggleSectionContent(section)">
+                            <span style="width: 95%;" class="section-title">{{ section.title }}</span>
+                            <span style="width: 5%;" class="expand-icon">{{ section.isContentOpen ? '▼' : '▶' }}</span>
+                        </button>
+                        <div class="accordion-content" *ngIf="section.isContentOpen">
+                            <ul>
+                                <li *ngFor="let lecture of section.lectures">
+                                    {{ lecture.title }} ({{ lecture.duration }})
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

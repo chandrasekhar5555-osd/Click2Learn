@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "click2learnserver", "click2learnserver\click2learnserver.csproj", "{5F72BE35-191E-4F1A-B25B-6DCD554266E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "click2learnserver", "click2learnserver\click2learnserver.csproj", "{5F72BE35-191E-4F1A-B25B-6DCD554266E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggingService", "LoggingService\LoggingService.csproj", "{BD29E6FB-CC15-48BC-95D5-AEE6BAE5D493}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggingService", "LoggingService\LoggingService.csproj", "{BD29E6FB-CC15-48BC-95D5-AEE6BAE5D493}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataService", "DataService\DataService.csproj", "{B5C99A78-0133-4744-81F6-F5A440BECA9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelService", "ModelService\ModelService.csproj", "{2BCEDA2C-F547-457C-A862-514584F74298}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionalService", "FunctionalService\FunctionalService.csproj", "{069A3A4F-FE35-4A1D-A23C-CDB6D142587E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +27,18 @@ Global
 		{BD29E6FB-CC15-48BC-95D5-AEE6BAE5D493}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD29E6FB-CC15-48BC-95D5-AEE6BAE5D493}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD29E6FB-CC15-48BC-95D5-AEE6BAE5D493}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5C99A78-0133-4744-81F6-F5A440BECA9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5C99A78-0133-4744-81F6-F5A440BECA9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5C99A78-0133-4744-81F6-F5A440BECA9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5C99A78-0133-4744-81F6-F5A440BECA9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BCEDA2C-F547-457C-A862-514584F74298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BCEDA2C-F547-457C-A862-514584F74298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BCEDA2C-F547-457C-A862-514584F74298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BCEDA2C-F547-457C-A862-514584F74298}.Release|Any CPU.Build.0 = Release|Any CPU
+		{069A3A4F-FE35-4A1D-A23C-CDB6D142587E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{069A3A4F-FE35-4A1D-A23C-CDB6D142587E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{069A3A4F-FE35-4A1D-A23C-CDB6D142587E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{069A3A4F-FE35-4A1D-A23C-CDB6D142587E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
