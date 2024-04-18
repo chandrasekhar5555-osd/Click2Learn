@@ -18,6 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OtpVerificationModalComponent } from './otp-verification-modal/otp-verification-modal.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CoursesComponent,
     AboutComponent,
     ContactComponent,
-    CartComponent
+    CartComponent,
+    OtpVerificationModalComponent
   ],
   imports: [
     BrowserModule,

@@ -15,12 +15,13 @@
                         </button>
                     </div>
                     <div style="width: 50%; float: right">
-                        <button disabled type="button" class="btn btn-primary btn-lg show-modal" title ="Temporarily out of service" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary btn-lg show-modal" data-bs-toggle="modal"
                             data-bs-target="#myModal" (click)="userSelect('I')">
                             INSTRUCTOR LOGIN
                         </button>
                     </div>
                 </div>
+                <!-- Instructor Modal -->
                 <div class="modal" id="myModal" tabindex="-1" data-bs-backdrop="static" role="dialog"
                     aria-labelledby="myModalLabel">
                     <div class="modal-dialog" role="document">
@@ -29,7 +30,9 @@
                                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
+
                                 <div class="modal-body">
+                                    <form (submit)="login()">
                                     <div class="modal-icon">
                                         <i class="fa fa-desktop"></i>
                                     </div>
@@ -38,13 +41,14 @@
                                             :)</span>
                                     </h3>
                                     <div class="form-group mb-2">
-                                        <input type="text" class="form-control" placeholder="Username" required="" />
+                                        <input type="text" [(ngModel)]="email" name="email" class="form-control" placeholder="Email" required="" />
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control" placeholder="Password"
+                                        <input type="password" [(ngModel)]="password" name="password" class="form-control" placeholder="Password"
                                             required="" />
                                     </div>
-                                    <button class="btn mb-0">Login</button>
+                                    <button type="submit" class="btn mb-0">Login here</button>
+                                </form>
                                     <hr *ngIf="selectedUser === 'S'" />
                                     <div *ngIf="selectedUser === 'S'" class="w-100 mb-3">
                                         <div class="form-group cursor" style="float: left; width: 20%;">

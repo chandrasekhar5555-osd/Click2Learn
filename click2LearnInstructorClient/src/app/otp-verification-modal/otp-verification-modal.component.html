@@ -1,0 +1,11 @@
+
+  <!-- otp-dialog.component.html -->
+  <h2 mat-dialog-title>Enter OTP</h2>
+  <div mat-dialog-content>
+    <p>Please enter the OTP sent to your Email:</p>
+    <input type="text" [(ngModel)]="code" placeholder="OTP" maxlength="6">
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button color="primary" (click)="verifyOTP()">Verify</button>
+  </div>
+  

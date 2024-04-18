@@ -7,6 +7,7 @@ import { ShopComponent } from './sidebar/shop/shop.component';
 import { ContactComponent } from './contact/contact.component';
 import { CartComponent } from './sidebar/cart/cart.component';
 import { CoursesComponent } from './courses/courses.component';
+import { OtpVerificationModalComponent } from './otp-verification-modal/otp-verification-modal.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'about', component: AboutComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'cart', component: CartComponent },
+  {path:'verification',component:OtpVerificationModalComponent},
   { path: '**', redirectTo: '/login' },
 ];
 
