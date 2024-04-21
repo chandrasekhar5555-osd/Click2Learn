@@ -1,0 +1,41 @@
+name: Build and deploy Node.js app to Azure Web App - Click2Learn-backend
+
+on:
+  push:
+    branches:
+      - bhanu
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+
+      - name: npm install and build
+        run: |
+          cd Click2Learn/click2LearnBackend
+          npm install
+          # Modify the build command according to your project setup
+          npm run build
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'Click2Learn-backend'
+          package: Click2Learn/click2LearnBackend
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2A9ACD00C517483886F9AE6B224A3FF3 }}
