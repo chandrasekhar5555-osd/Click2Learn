@@ -10,23 +10,20 @@ import { Location } from '@angular/common';
 })
 export class OtpVerificationModalComponent {
   enteredOTP: string = '';
-  isFirstLoad: boolean = true;
-  code!:string;
-  constructor(private router: Router,private authService: AuthenticationService, private toastr: ToastrService, private location: Location) {
+  code!: string;
+  constructor(private router: Router, private authService: AuthenticationService, private toastr: ToastrService, private location: Location) {
   }
 
   ngOnInit() {
-    if(this.isFirstLoad){
-      // window.location.reload();
-      this.isFirstLoad=false}
   }
   verifyOTP() {
-   
+
     console.log("here verify otp")
-    const email=localStorage.getItem("email")
+    const email = localStorage.getItem("email")
     this.authService.verifyOTP(email, this.code).subscribe({
       next: (response: any) => {
         this.toastr.success('OTP verified successfully');
+        this.authService.onLoginUser(true);
         // Proceed with login after OTP verification
         this.router.navigate(['/dashboard']);
       },

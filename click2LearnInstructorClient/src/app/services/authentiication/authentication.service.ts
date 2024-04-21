@@ -17,15 +17,12 @@ export class AuthenticationService {
 
   signUp(userObject:any){
     const userRequest = {
-      Role: "User",
-      Token: "",
-      LastName: userObject.lastName,
-      UserName: userObject.username,
-      FirstName: userObject.firstName,
+      lastName: userObject.lastName,
+      firstName: userObject.firstName,
       email: userObject.email,
       password: userObject.password
     }
-    return this.http.post<any>(`${this.baseUrl}signup`, userRequest);
+    return this.http.post<any>(`${this.baseUrl}users/register`, userRequest);
   }
 
   login(loginObj:any){

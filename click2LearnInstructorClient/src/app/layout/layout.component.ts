@@ -15,7 +15,7 @@ export class LayoutComponent {
 
   constructor(private router: Router,private authService: AuthenticationService) {    
     this.router.events.pipe(filter((event:any) => event instanceof NavigationEnd)).subscribe((event: any) => {
-      this.onMenuShow = event.urlAfterRedirects.includes("/login") || event.urlAfterRedirects.includes("/signup") ? false: true;
+      this.onMenuShow = event.urlAfterRedirects.includes("/verification") || event.urlAfterRedirects.includes("/login") || event.urlAfterRedirects.includes("/signup") ? false: true;
     });
     this.authService.userLoggedIn.subscribe((x: boolean) => this.userLoggedIn = x);
   }
