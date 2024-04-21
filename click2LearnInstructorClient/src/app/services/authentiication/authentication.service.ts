@@ -7,7 +7,8 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AuthenticationService {
 
-  private baseUrl: string = 'http://localhost:4000/'; 
+  //private baseUrl: string = 'http://localhost:4000/'; 
+  private baseUrl: string = 'https://click2learn-backend.azurewebsites.net/'; 
   userLoggedIn!: Observable<boolean>; // An observable to subscribe in need on other components
   observableLoginChange = new BehaviorSubject<boolean>(false); // Local subject variable to pass next calls
   constructor(private http: HttpClient) {
