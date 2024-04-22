@@ -19,6 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OtpVerificationModalComponent } from './otp-verification-modal/otp-verification-modal.component';
+import { AuthGuard } from './services/AuthGuard/auth-guard.service';
 
 
 @NgModule({
@@ -50,7 +51,7 @@ import { OtpVerificationModalComponent } from './otp-verification-modal/otp-veri
       //preventDuplicates: true,
     }),
   ],
-  providers: [],
+  providers: [AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

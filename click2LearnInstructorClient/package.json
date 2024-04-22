@@ -17,7 +17,7 @@
     "@angular/forms": "^16.2.0",
     "@angular/platform-browser": "^16.2.0",
     "@angular/platform-browser-dynamic": "^16.2.0",
-    "@angular/router": "^16.2.0",
+    "@angular/router": "^16.2.12",
     "@paypal/sdk-client": "^4.0.185",
     "@popperjs/core": "^2.11.8",
     "angular-font-awesome": "^3.1.2",
