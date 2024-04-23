@@ -1,4 +1,4 @@
-name: Build and deploy Node.js app to Azure Web App - Click2Learn-backend
+name: Click2Learn-backend
 
 on:
   push:
@@ -20,10 +20,7 @@ jobs:
 
       - name: npm install and build
         run: |
-          cd Click2Learn/click2LearnBackend
-          npm install
-          # Modify the build command according to your project setup
-          npm run build
+          cd click2LearnBackend
 
   deploy:
     runs-on: ubuntu-latest
@@ -37,5 +34,6 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'Click2Learn-backend'
-          package: Click2Learn/click2LearnBackend
+          slot-name: 'Production'
+          package: .
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2A9ACD00C517483886F9AE6B224A3FF3 }}
