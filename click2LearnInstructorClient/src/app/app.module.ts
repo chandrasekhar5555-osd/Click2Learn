@@ -18,6 +18,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OtpVerificationModalComponent } from './otp-verification-modal/otp-verification-modal.component';
+import { AuthGuard } from './services/AuthGuard/auth-guard.service';
 
 
 @NgModule({
@@ -33,7 +35,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CoursesComponent,
     AboutComponent,
     ContactComponent,
-    CartComponent
+    CartComponent,
+    OtpVerificationModalComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +51,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       //preventDuplicates: true,
     }),
   ],
-  providers: [],
+  providers: [AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

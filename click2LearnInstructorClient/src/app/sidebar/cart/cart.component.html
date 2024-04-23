@@ -10,12 +10,14 @@
           <div class="cart-item-details">
             <h3 class="cart-item-title">{{ item.title }}</h3>
             <p class="cart-item-description">{{ item.description }}</p>
-            <p class="cart-item-price">{{ item.price }}</p>
+            <p class="cart-item-price">${{ item.price }}</p>
           </div>
           <button class="remove-item-button mx-2" (click)="removeFromCart(item)">Remove</button>
         </div>
       </div>
     </ng-template>
+    <h4  *ngIf="cartItems.length > 0" >Total amount: ${{amount}}</h4>
+    <br>
     <button *ngIf="cartItems.length > 0" class="buy-now-button" (click)="buyNow()">Buy Now</button>
   </div>
 
@@ -25,3 +27,5 @@
         <div id="paypal-button-container"></div>
     </div>
 </div>
+
+<!-- free card: 371449635398431 -->

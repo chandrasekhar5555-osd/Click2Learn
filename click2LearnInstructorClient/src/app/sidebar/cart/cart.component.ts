@@ -11,7 +11,7 @@ declare var paypal: any;
   styleUrls: ['./cart.component.scss'],
 })
 export class CartComponent {
-  amount: number = 10; // The amount to be paid
+  amount: number = 0; // The amount to be paid
   paypalRendered: boolean = false;
   paypalButtonContainer: any;
   paymentSuccess: boolean = false;
@@ -32,6 +32,9 @@ export class CartComponent {
     this.cartService.getCartItems().subscribe((items) => {
       this.cartItems = items;
     });
+    this.cartItems.forEach(item => {
+      this.amount += parseInt(item.price);
+    })
   }
 
   removeFromCart(item: any): void {
@@ -55,6 +58,7 @@ export class CartComponent {
   }
 
   renderCreditCardPayment(): void {
+    this.paypalPopup.nativeElement.style.display = 'block';
     this.paypalButtonContainer = document.getElementById(
       'paypal-button-container'
     );
@@ -89,6 +93,7 @@ export class CartComponent {
   }
 
   buyNow(): void {
+    this.closePaypalPopup();
     this.renderCreditCardPayment();
   }
 

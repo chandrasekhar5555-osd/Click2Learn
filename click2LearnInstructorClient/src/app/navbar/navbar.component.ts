@@ -26,7 +26,8 @@ export class NavbarComponent implements OnInit{
 
   logout(){
     this.logoutUser.emit(false);
-    this.router.navigate(['/login'])
+    this.router.navigate(['/login']);
+    localStorage.removeItem("userID")
   }
 
 }
