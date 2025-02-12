@@ -22,12 +22,11 @@ steps:
     displayName: 'List Files in Repository'
 
   - script: |
-      cd path/to/frontend # Replace with the correct folder path containing package.json
       npm install
       npm run build
     displayName: 'Install Dependencies and Build'
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/path/to/frontend/build'  # Adjust folder to the build directory
+      pathToPublish: '$(Build.SourcesDirectory)/build'  # Adjust if needed
       artifactName: 'frontend'
