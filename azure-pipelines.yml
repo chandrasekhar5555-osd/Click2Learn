@@ -16,17 +16,27 @@ steps:
     inputs:
       versionSpec: '16.x'
 
+  # Install and build frontend
   - script: |
-      echo "Listing files in the repository:"
-      ls -alh  # Check the file structure in the repository
-    displayName: 'List Files in Repository'
-
-  - script: |
+      cd click2LearnInstructorClient  # Navigate to the frontend directory
       npm install
       npm run build
-    displayName: 'Install Dependencies and Build'
+    displayName: 'Install Dependencies and Build Frontend'
+
+  # Install and build backend (if needed)
+  - script: |
+      cd click2LearnBackend  # Navigate to the backend directory
+      npm install
+      npm run build
+    displayName: 'Install Dependencies and Build Backend'
+
+  # Publish build artifacts
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '$(Build.SourcesDirectory)/click2LearnInstructorClient/build'  # Adjust if needed
+      artifactName: 'frontend'
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/build'  # Adjust if needed
-      artifactName: 'frontend'
+      pathToPublish: '$(Build.SourcesDirectory)/click2LearnBackend/build'  # Adjust if needed
+      artifactName: 'backend'
