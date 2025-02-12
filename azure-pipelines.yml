@@ -24,4 +24,5 @@ steps:
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/frontend-dir
+      pathToPublish: '$(Build.SourcesDirectory)/frontend-directory/build' # Adjust folder to the build directory
+      artifactName: 'frontend'
