@@ -17,12 +17,11 @@ steps:
       versionSpec: '16.x'
 
   - script: |
+      cd frontend-directory # Ensure this is the correct folder containing package.json
       npm install
       npm run build
     displayName: 'Install Dependencies and Build'
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/build'
-      artifactName: 'frontend'
-
+      pathToPublish: '$(Build.SourcesDirectory)/frontend-dir
