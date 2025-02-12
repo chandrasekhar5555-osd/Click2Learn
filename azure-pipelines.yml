@@ -17,11 +17,17 @@ steps:
       versionSpec: '16.x'
 
   - script: |
+      echo "Listing files in the repository:"
+      ls -alh  # Check the file structure in the repository
+    displayName: 'List Files in Repository'
+
+  - script: |
+      cd path/to/frontend # Replace with the correct folder path containing package.json
       npm install
       npm run build
     displayName: 'Install Dependencies and Build'
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/build'
+      pathToPublish: '$(Build.SourcesDirectory)/path/to/frontend/build'  # Adjust folder to the build directory
       artifactName: 'frontend'
