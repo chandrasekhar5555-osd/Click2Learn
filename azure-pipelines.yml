@@ -23,19 +23,20 @@ steps:
       npm run build
     displayName: 'Install Dependencies and Build Frontend'
 
-  # Install and build backend (if needed)
+  # Install and start backend
   - script: |
       cd click2LearnBackend  # Navigate to the backend directory
       npm install
-      npm run build
-    displayName: 'Install Dependencies and Build Backend'
+      npm start  # Use the start script defined in package.json
+    displayName: 'Install Dependencies and Start Backend'
 
-  # Publish build artifacts
+  # Publish build artifacts for frontend
   - task: PublishBuildArtifacts@1
     inputs:
       pathToPublish: '$(Build.SourcesDirectory)/click2LearnInstructorClient/build'  # Adjust if needed
       artifactName: 'frontend'
 
+  # Publish build artifacts for backend (if needed)
   - task: PublishBuildArtifacts@1
     inputs:
       pathToPublish: '$(Build.SourcesDirectory)/click2LearnBackend/build'  # Adjust if needed
