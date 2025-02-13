@@ -29,6 +29,11 @@ steps:
       npm install
       npm start
     displayName: 'Install Dependencies and Start Backend'
+  - script: |
+      echo "Testing MongoDB Connection..."
+      timeout 10s bash -c 'while ! nc -z click2learn.sqpcc.mongodb.net 27017; do echo "Waiting for MongoDB..."; sleep 2; done'
+      echo "MongoDB is reachable!"
+    displayName: 'Check MongoDB Connectivity'
 
   # Publish build artifacts for frontend
   - task: PublishBuildArtifacts@1
