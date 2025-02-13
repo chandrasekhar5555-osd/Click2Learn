@@ -18,26 +18,26 @@ steps:
 
   # Install and build frontend
   - script: |
-      cd click2LearnInstructorClient  # Navigate to the frontend directory
+      cd click2LearnInstructorClient  # Navigate to frontend directory
       npm install
       npm run build
     displayName: 'Install Dependencies and Build Frontend'
 
   # Install and start backend
   - script: |
-      cd click2LearnBackend  # Navigate to the backend directory
+      cd click2LearnBackend  # Navigate to backend directory
       npm install
-      npm start  # Use the start script defined in package.json
+      npm start
     displayName: 'Install Dependencies and Start Backend'
 
   # Publish build artifacts for frontend
   - task: PublishBuildArtifacts@1
     inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/click2LearnInstructorClient/build'  # Adjust if needed
+      pathToPublish: '$(Build.SourcesDirectory)/click2LearnInstructorClient/build'
       artifactName: 'frontend'
 
   # Publish build artifacts for backend (if needed)
   - task: PublishBuildArtifacts@1
     inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/click2LearnBackend/build'  # Adjust if needed
+      pathToPublish: '$(Build.SourcesDirectory)/click2LearnBackend/build'
       artifactName: 'backend'
