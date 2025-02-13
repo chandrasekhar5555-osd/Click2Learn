@@ -15,7 +15,7 @@ router.post('/users/register', async (req, res) => {
     // if (role) throw new Error('you cannot set role property.');
     const user = new User(req.body);
     await user.save();
-    console.log(user.password)
+    //console.log(user.password)
     // const token = await user.generateAuthToken();
     // const refresh=await user.generateRefreshToken();
     // res.send(user)

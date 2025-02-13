@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
 // Connect to MongoDB
 mongoose.connect(
-    "mongodb+srv://bhanu:Bhanu0208@cluster0.erkcerk.mongodb.net/?retryWrites=true&w=majority"
+    "mongodb+srv://chandrasekharn081998:0jrxKojzbuipDxHD@click2learn.sqpcc.mongodb.net/?retryWrites=true&w=majority&appName=Click2Learn"
   );
