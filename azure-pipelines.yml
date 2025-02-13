@@ -6,29 +6,40 @@
 trigger:
   branches:
     include:
-      - main
+      - mainaz  # Change to your target branch name if different
 
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  azureSubscription: 'azure-connection'  # Azure service connection
+  appName: 'your-backend-app-name'  # Azure App Service name for backend
+  frontendAppName: 'your-frontend-app-name'  # Azure Static Web App name for frontend
+  resourceGroup: 'your-resource-group'  # Resource group name
+  backendDir: 'click2LearnBackend'  # Path to backend directory
+  frontendDir: 'click2LearnInstructorClient'  # Path to frontend directory
+
 steps:
+  # Setup Node.js environment
   - task: NodeTool@0
     inputs:
       versionSpec: '16.x'
 
   # Install and build frontend
   - script: |
-      cd click2LearnInstructorClient  # Navigate to frontend directory
+      cd $(frontendDir)  # Navigate to frontend directory
       npm install
       npm run build
     displayName: 'Install Dependencies and Build Frontend'
 
-  # Install and start backend
+  # Install and start backend (start only for local tests in this step)
   - script: |
-      cd click2LearnBackend  # Navigate to backend directory
+      cd $(backendDir)  # Navigate to backend directory
       npm install
-      npm start
-    displayName: 'Install Dependencies and Start Backend'
+      npm run build  # Assuming you have a build step for production, otherwise use npm start
+    displayName: 'Install Dependencies and Build Backend'
+
+  # Test MongoDB Connection
   - script: |
       echo "Testing MongoDB Connection..."
       timeout 10s bash -c 'while ! nc -z click2learn.sqpcc.mongodb.net 27017; do echo "Waiting for MongoDB..."; sleep 2; done'
@@ -38,11 +49,29 @@ steps:
   # Publish build artifacts for frontend
   - task: PublishBuildArtifacts@1
     inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/click2LearnInstructorClient/build'
+      pathToPublish: '$(Build.SourcesDirectory)/$(frontendDir)/build'
       artifactName: 'frontend'
 
   # Publish build artifacts for backend (if needed)
   - task: PublishBuildArtifacts@1
     inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/click2LearnBackend/build'
+      pathToPublish: '$(Build.SourcesDirectory)/$(backendDir)/build'
       artifactName: 'backend'
+
+  # Deploy Backend to Azure App Service
+  - task: AzureWebApp@1
+    inputs:
+      azureSubscription: ""  # Azure service connection
+      appName: $(appName)  # App Service name for backend
+      package: $(System.DefaultWorkingDirectory)/$(backendDir)  # Path to deploy
+    displayName: 'Deploy Backend to Azure App Service'
+
+  # Deploy Frontend to Azure Static Web App (Optional, for frontend deployment)
+  - task: AzureStaticWebApp@0
+    inputs:
+      azureSubscription: ""  # Azure service connection
+      appLocation: '$(System.DefaultWorkingDirectory)/$(frontendDir)'  # Path to frontend code
+      apiLocation: ''  # If you have an API, otherwise leave it blank
+      outputLocation: 'build'  # Frontend build output folder
+      appName: $(frontendAppName)  # Azure Static Web App name for frontend
+    displayName: 'Deploy Frontend to Azure Static Web App'
