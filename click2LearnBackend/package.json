@@ -1,20 +1,27 @@
 {
   "name": "click2learnbackend",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Node.js Express application with MongoDB and Azure DevOps deployment",
   "main": "index.js",
   "scripts": {
-    "start": "node index"
+    "start": "node index.js",
+    "build": "webpack --config webpack.config.js",
+    "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "click2learnbackend": "file:",
     "cors": "^2.8.5",
-    "express": "^4.19.2",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mailgen": "^2.0.28",
-    "mongoose": "^8.3.2",
+    "mongoose": "^8.10.0",
     "nodemailer": "^6.9.13"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
