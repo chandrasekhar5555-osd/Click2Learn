@@ -47,7 +47,7 @@ steps:
   # Deploy Backend to Azure App Service
   - task: AzureWebApp@1
     inputs:
-      azureSubscription: $(azureSubscription)  # Azure service connection
+      azureSubscription: ""  # Azure service connection
       appName: $(appName)  # Azure App Service name for backend
       package: '$(System.DefaultWorkingDirectory)/$(backendDir)'  # Path to backend to deploy
     displayName: 'Deploy Backend to Azure App Service'
