@@ -1,8 +1,3 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
   branches:
     include:
@@ -14,10 +9,8 @@ pool:
 variables:
   azureSubscription: 'azure-connection'  # Azure service connection
   appName: 'your-backend-app-name'  # Azure App Service name for backend
-  frontendAppName: 'your-frontend-app-name'  # Azure Static Web App name for frontend
   resourceGroup: 'your-resource-group'  # Resource group name
   backendDir: 'click2LearnBackend'  # Path to backend directory
-  frontendDir: 'click2LearnInstructorClient'  # Path to frontend directory
 
 steps:
   # Setup Node.js environment
@@ -25,19 +18,17 @@ steps:
     inputs:
       versionSpec: '16.x'
 
-  # Install and build frontend
-  - script: |
-      cd $(frontendDir)  # Navigate to frontend directory
-      npm install
-      npm run build
-    displayName: 'Install Dependencies and Build Frontend'
-
-  # Install and start backend (start only for local tests in this step)
+  # Install dependencies for backend
   - script: |
       cd $(backendDir)  # Navigate to backend directory
       npm install
-      npm run build  # Assuming you have a build step for production, otherwise use npm start
-    displayName: 'Install Dependencies and Build Backend'
+    displayName: 'Install Dependencies for Backend'
+
+  # Build backend (use npm start, as webpack isn't needed for backend)
+  - script: |
+      cd $(backendDir)  # Navigate to backend directory
+      npm start  # Or use `npm run build` if a build step is required
+    displayName: 'Build Backend (npm start)'
 
   # Test MongoDB Connection
   - script: |
@@ -46,32 +37,17 @@ steps:
       echo "MongoDB is reachable!"
     displayName: 'Check MongoDB Connectivity'
 
-  # Publish build artifacts for frontend
+  # Publish build artifacts for backend
   - task: PublishBuildArtifacts@1
     inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/$(frontendDir)/build'
-      artifactName: 'frontend'
-
-  # Publish build artifacts for backend (if needed)
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/$(backendDir)/build'
+      pathToPublish: '$(Build.SourcesDirectory)/$(backendDir)'  # Publish backend files
       artifactName: 'backend'
+      publishLocation: 'Container'
 
   # Deploy Backend to Azure App Service
   - task: AzureWebApp@1
     inputs:
-      azureSubscription: ""  # Azure service connection
-      appName: $(appName)  # App Service name for backend
-      package: $(System.DefaultWorkingDirectory)/$(backendDir)  # Path to deploy
+      azureSubscription: $(azureSubscription)  # Azure service connection
+      appName: $(appName)  # Azure App Service name for backend
+      package: '$(System.DefaultWorkingDirectory)/$(backendDir)'  # Path to backend to deploy
     displayName: 'Deploy Backend to Azure App Service'
-
-  # Deploy Frontend to Azure Static Web App (Optional, for frontend deployment)
-  - task: AzureStaticWebApp@0
-    inputs:
-      azureSubscription: ""  # Azure service connection
-      appLocation: '$(System.DefaultWorkingDirectory)/$(frontendDir)'  # Path to frontend code
-      apiLocation: ''  # If you have an API, otherwise leave it blank
-      outputLocation: 'build'  # Frontend build output folder
-      appName: $(frontendAppName)  # Azure Static Web App name for frontend
-    displayName: 'Deploy Frontend to Azure Static Web App'
