@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
         }
 
         this.sendOTP();
-        
+
         this.fname = '';
         this.lname = '';
         this.email = '';
@@ -92,15 +92,15 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('email', this.email);
           localStorage.setItem('userID', response.user._id);
           this.authService.onLoginUser(true);
-          
+
           if (this.closeRegButton) {
             this.closeRegButton.nativeElement.click();
           }
-      
+
           this.fname = '';
           this.lname = '';
           this.email = '';
-          this.password = '';      
+          this.password = '';
         }
         else {
           this.toastr.error(response?._message);
@@ -110,7 +110,7 @@ export class LoginComponent implements OnInit {
       error: (err: any) => {
         if (err) {
           this.toastr.error('Unable to connect Database');
-        } 
+        }
       },
     });
   }
