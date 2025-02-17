@@ -1,43 +1,43 @@
 trigger:
-- master
+  - master  # Adjust branch if needed
 
 pool:
   vmImage: 'windows-latest'
 
 variables:
-  # Set your Angular project path
   angularPath: 'click2LearnInstructorClient'
-  # Set your .NET project path
   dotnetPath: 'click2learnserver'
+  buildConfiguration: 'Release'
+  dotnetPublishPath: '$(Build.ArtifactStagingDirectory)/dotnet'
+  angularPublishPath: '$(Build.ArtifactStagingDirectory)/angular'
 
 steps:
 
-# Install Node.js for Angular
+# Install Node.js
 - task: NodeTool@0
   inputs:
     versionSpec: '16.x'
   displayName: 'Install Node.js'
 
-# Install Angular dependencies
+# Install Angular Dependencies
 - script: |
-      cd $(angularPath)
-      npm install
-  displayName: 'Install Angular dependencies'
+    cd $(angularPath)
+    npm install
+  displayName: 'Install Angular Dependencies'
 
-# Build Angular project
-- task: Npm@1
-  inputs:
-    command: 'run build --if-present'
-    workingDirectory: $(angularPath)
-  displayName: 'Build Angular project'
+# Build Angular Project
+- script: |
+    cd $(angularPath)
+    npm run build -- --configuration production
+  displayName: 'Build Angular Project'
 
-# Publish Angular build files (optional)
+# Publish Angular Build Artifacts
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(angularPath)/dist'
+    PathtoPublish: '$(angularPath)/dist/click2LearnInstructorClient'
     ArtifactName: 'angularBuild'
     publishLocation: 'Container'
-  displayName: 'Publish Angular build'
+  displayName: 'Publish Angular Build'
 
 # Install .NET SDK
 - task: UseDotNet@2
@@ -46,34 +46,50 @@ steps:
     version: '6.x'
   displayName: 'Install .NET 6 SDK'
 
-# Restore .NET dependencies
+# Restore .NET Dependencies
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
-    projects: $(dotnetPath)/click2learnserver.csproj
-  displayName: 'Restore .NET dependencies'
+    projects: '$(dotnetPath)/click2learnserver.csproj'
+  displayName: 'Restore .NET Dependencies'
 
-# Build .NET project
+# Build .NET Project
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: $(dotnetPath)/click2learnserver.csproj
-  displayName: 'Build .NET project'
+    projects: '$(dotnetPath)/click2learnserver.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+  displayName: 'Build .NET Project'
 
-# Run .NET tests (optional)
+# Publish .NET Application
 - task: DotNetCoreCLI@2
   inputs:
-    command: 'test'
-    projects: $(dotnetPath)/click2learnserver.csproj
-  displayName: 'Run .NET tests'
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '--configuration $(buildConfiguration) --output $(dotnetPublishPath)'
+  displayName: 'Publish .NET Application'
 
-# Publish .NET build artifacts (optional)
+# Publish .NET Build Artifacts
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(dotnetPath)/bin/$(BuildConfiguration)/net6.0/publish'
+    PathtoPublish: '$(dotnetPublishPath)'
     ArtifactName: 'dotnetBuild'
     publishLocation: 'Container'
-  displayName: 'Publish .NET build'
+  displayName: 'Publish .NET Build'
 
-# Deploy Angular and .NET (example: to Azure Web Apps)
-# Add deployment tasks here if needed (e.g., Azure App Service deploy tasks)
+# Deploy .NET API to Azure App Service
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'click2learnserviceconnection'
+    appName: 'functionnclick2learm'
+    package: '$(dotnetPublishPath)'
+  displayName: 'Deploy .NET API to Azure App Service'
+
+# Deploy Angular to Azure Static Web Apps (if using Static Web Apps)
+- task: AzureStaticWebApp@0
+  inputs:
+    app_location: '$(angularPath)/dist/click2LearnInstructorClient'
+    output_location: 'dist/click2LearnInstructorClient'
+    azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
+  displayName: 'Deploy Angular to Azure Static Web Apps'
+
