@@ -49,28 +49,28 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
-    projects: '$(dotnetPath)/click2learnserver.csproj'
+    projects: '$(dotnetPath)/services/click2learnserver.csproj'
   displayName: 'Restore .NET dependencies'
 
 # Build .NET project
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: '$(dotnetPath)/click2learnserver.csproj'
+    projects: '$(dotnetPath)/services/click2learnserver.csproj'
   displayName: 'Build .NET project'
 
 # Run .NET tests (optional)
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: '$(dotnetPath)/click2learnserver.csproj'
+    projects: '$(dotnetPath)/services/click2learnserver.csproj'
   displayName: 'Run .NET tests'
 
 # Publish .NET build artifacts
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
-    projects: '$(dotnetPath)/click2learnserver.csproj'
+    projects: '$(dotnetPath)/services/click2learnserver.csproj'
     arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
   displayName: 'Publish .NET build'
 
