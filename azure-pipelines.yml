@@ -83,13 +83,12 @@ steps:
   displayName: 'Publish .NET build'
 
 # Deploy .NET to Azure App Service (Modify the App Name and Service Connection)
-- task: AzureFunctionApp@1
+- task: AzureWebApp@1
   inputs:
     azureSubscription: 'click2learnserviceconnection'
-    appName: 'functionnclick2learm'
-    appType: 'functionApp'  # <-- Add this line
-    package: '$(dotnetPublishPath)'
-  displayName: 'Deploy .NET API to Azure Function App'
+    appName: 'functionnclick2learm'  # Replace with your actual App Service name
+    package: '$(Build.ArtifactStagingDirectory)' # Ensure correct path
+  displayName: 'Deploy .NET API to Azure App Service'
 
 # Deploy Angular to Azure Blob Storage or Static Web Apps (Optional)
 - task: AzureCLI@2
