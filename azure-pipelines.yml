@@ -1,40 +1,39 @@
 trigger:
-  - master  # Adjust branch if needed
+  - master
 
 pool:
   vmImage: 'windows-latest'
 
 variables:
+  # Set your Angular project path
   angularPath: 'click2LearnInstructorClient'
+  # Set your .NET project path
   dotnetPath: 'click2learnserver'
-  buildConfiguration: 'Release'
-  dotnetPublishPath: '$(Build.ArtifactStagingDirectory)/dotnet'
-  angularPublishPath: '$(Build.ArtifactStagingDirectory)/angular'
 
 steps:
 
-# Install Node.js
+# Install Node.js for Angular
 - task: NodeTool@0
   inputs:
     versionSpec: '16.x'
   displayName: 'Install Node.js'
 
-# Install Angular Dependencies
+# Install Angular dependencies
 - script: |
     cd $(angularPath)
     npm install
-  displayName: 'Install Angular Dependencies'
+  displayName: 'Install Angular dependencies'
 
-# Build Angular Project
+# Build Angular project
 - script: |
     cd $(angularPath)
-    npm run build -- --configuration production
-  displayName: 'Build Angular Project'
+    npm run build -- --configuration=production
+  displayName: 'Build Angular project'
 
-# Publish Angular Build Artifacts
+# Publish Angular build files
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(angularPath)/dist/click2LearnInstructorClient'
+    PathtoPublish: '$(angularPath)/dist/click2-learn-instructor-client'
     ArtifactName: 'angularBuild'
     publishLocation: 'Container'
   displayName: 'Publish Angular Build'
@@ -46,50 +45,58 @@ steps:
     version: '6.x'
   displayName: 'Install .NET 6 SDK'
 
-# Restore .NET Dependencies
+# Restore .NET dependencies
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
     projects: '$(dotnetPath)/click2learnserver.csproj'
-  displayName: 'Restore .NET Dependencies'
+  displayName: 'Restore .NET dependencies'
 
-# Build .NET Project
+# Build .NET project
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     projects: '$(dotnetPath)/click2learnserver.csproj'
-    arguments: '--configuration $(buildConfiguration)'
-  displayName: 'Build .NET Project'
+  displayName: 'Build .NET project'
 
-# Publish .NET Application
+# Run .NET tests (optional)
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: '$(dotnetPath)/click2learnserver.csproj'
+  displayName: 'Run .NET tests'
+
+# Publish .NET build artifacts
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
-    publishWebProjects: true
-    arguments: '--configuration $(buildConfiguration) --output $(dotnetPublishPath)'
-  displayName: 'Publish .NET Application'
+    projects: '$(dotnetPath)/click2learnserver.csproj'
+    arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
+  displayName: 'Publish .NET build'
 
-# Publish .NET Build Artifacts
+# Publish .NET artifacts
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(dotnetPublishPath)'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'dotnetBuild'
     publishLocation: 'Container'
-  displayName: 'Publish .NET Build'
+  displayName: 'Publish .NET build'
 
-# Deploy .NET API to Azure App Service
-- task: AzureWebApp@1
+# Deploy .NET to Azure App Service (Modify the App Name and Service Connection)
+- task: AzureFunctionApp@1
   inputs:
     azureSubscription: 'click2learnserviceconnection'
     appName: 'functionnclick2learm'
+    appType: 'functionApp'  # <-- Add this line
     package: '$(dotnetPublishPath)'
-  displayName: 'Deploy .NET API to Azure App Service'
+  displayName: 'Deploy .NET API to Azure Function App'
 
-# Deploy Angular to Azure Static Web Apps (if using Static Web Apps)
-- task: AzureStaticWebApp@0
+# Deploy Angular to Azure Blob Storage or Static Web Apps (Optional)
+- task: AzureCLI@2
   inputs:
-    app_location: '$(angularPath)/dist/click2LearnInstructorClient'
-    output_location: 'dist/click2LearnInstructorClient'
-    azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
-  displayName: 'Deploy Angular to Azure Static Web Apps'
-
+    azureSubscription: 'click2learnserviceconnection'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az storage blob upload-batch -d '$web' --account-name 'emailservices9' -s '$(angularPath)/dist/click2-learn-instructor-client'
+  displayName: 'Deploy Angular to Azure Storage (Optional)'
