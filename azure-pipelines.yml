@@ -19,10 +19,9 @@ steps:
   displayName: 'Install Node.js'
 
 # Install Angular dependencies
-- task: Npm@1
-  inputs:
-    command: 'install'
-    workingDirectory: $(angularPath)
+- script: |
+      cd $(angularPath)
+      npm install
   displayName: 'Install Angular dependencies'
 
 # Build Angular project
