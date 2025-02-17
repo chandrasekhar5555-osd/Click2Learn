@@ -1,48 +1,80 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-  branches:
-    include:
-      - main
+- main  # or your default branch name
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
+
+variables:
+  # Set your Angular project path
+  angularPath: 'click2LearnInstructorClient'
+  # Set your .NET project path
+  dotnetPath: 'click2learnserver'
 
 steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '16.x'
 
-  # Install and build frontend
-  - script: |
-      cd click2LearnInstructorClient  # Navigate to frontend directory
-      npm install
-      npm run build
-    displayName: 'Install Dependencies and Build Frontend'
+# Install Node.js for Angular
+- task: UseNode@2
+  inputs:
+    versionSpec: '16.x'
+  displayName: 'Install Node.js'
 
-  # Install and start backend
-  - script: |
-      cd click2LearnBackend  # Navigate to backend directory
-      npm install
-      npm start
-    displayName: 'Install Dependencies and Start Backend'
-  - script: |
-      echo "Testing MongoDB Connection..."
-      timeout 10s bash -c 'while ! nc -z click2learn.sqpcc.mongodb.net 27017; do echo "Waiting for MongoDB..."; sleep 2; done'
-      echo "MongoDB is reachable!"
-    displayName: 'Check MongoDB Connectivity'
+# Install Angular dependencies
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDirectory: $(angularPath)
+  displayName: 'Install Angular dependencies'
 
-  # Publish build artifacts for frontend
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/click2LearnInstructorClient/build'
-      artifactName: 'frontend'
+# Build Angular project
+- task: Npm@1
+  inputs:
+    command: 'run build --if-present'
+    workingDirectory: $(angularPath)
+  displayName: 'Build Angular project'
 
-  # Publish build artifacts for backend (if needed)
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/click2LearnBackend/build'
-      artifactName: 'backend'
+# Publish Angular build files (optional)
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(angularPath)/dist'
+    ArtifactName: 'angularBuild'
+    publishLocation: 'Container'
+  displayName: 'Publish Angular build'
+
+# Install .NET SDK
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '6.x'
+  displayName: 'Install .NET 6 SDK'
+
+# Restore .NET dependencies
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    projects: $(dotnetPath)/click2learnserver.csproj
+  displayName: 'Restore .NET dependencies'
+
+# Build .NET project
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: $(dotnetPath)/click2learnserver.csproj
+  displayName: 'Build .NET project'
+
+# Run .NET tests (optional)
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: $(dotnetPath)/click2learnserver.csproj
+  displayName: 'Run .NET tests'
+
+# Publish .NET build artifacts (optional)
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(dotnetPath)/bin/$(BuildConfiguration)/net6.0/publish'
+    ArtifactName: 'dotnetBuild'
+    publishLocation: 'Container'
+  displayName: 'Publish .NET build'
+
+# Deploy Angular and .NET (example: to Azure Web Apps)
+# Add deployment tasks here if needed (e.g., Azure App Service deploy tasks)
