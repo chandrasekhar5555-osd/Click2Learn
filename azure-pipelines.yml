@@ -45,32 +45,32 @@ steps:
     version: '6.x'
   displayName: 'Install .NET 6 SDK'
 
-# Restore .NET dependencies
+# Restore .NET dependencies (using the wildcard to find all .csproj files)
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
-    projects: '$(dotnetPath)/services/click2learnserver.csproj'
+    projects: '$(dotnetPath)/**/*.csproj'  # Use wildcard to match all .csproj files
   displayName: 'Restore .NET dependencies'
 
-# Build .NET project
+# Build .NET project (using wildcard for all .csproj files)
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: '$(dotnetPath)/services/click2learnserver.csproj'
+    projects: '$(dotnetPath)/**/*.csproj'  # Use wildcard to match all .csproj files
   displayName: 'Build .NET project'
 
 # Run .NET tests (optional)
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: '$(dotnetPath)/services/click2learnserver.csproj'
+    projects: '$(dotnetPath)/**/*.csproj'  # Use wildcard to match all .csproj files
   displayName: 'Run .NET tests'
 
 # Publish .NET build artifacts
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
-    projects: '$(dotnetPath)/services/click2learnserver.csproj'
+    projects: '$(dotnetPath)/**/*.csproj'  # Use wildcard to match all .csproj files
     arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
   displayName: 'Publish .NET build'
 
@@ -82,12 +82,12 @@ steps:
     publishLocation: 'Container'
   displayName: 'Publish .NET build'
 
-# Deploy .NET to Azure App Service (Modify the App Name and Service Connection)
+# Deploy .NET to Azure App Service
 - task: AzureWebApp@1
   inputs:
     azureSubscription: 'click2learnserviceconnection'
     appName: 'functionnclick2learm'  # Replace with your actual App Service name
-    package: '$(Build.ArtifactStagingDirectory)' # Ensure correct path
+    package: '$(Build.ArtifactStagingDirectory)'  # Ensure correct path to the publish output
   displayName: 'Deploy .NET API to Azure App Service'
 
 # Deploy Angular to Azure Blob Storage or Static Web Apps (Optional)
