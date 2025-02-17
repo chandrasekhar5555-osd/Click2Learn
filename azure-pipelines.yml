@@ -1,53 +1,80 @@
 trigger:
-  branches:
-    include:
-      - mainaz  # Change to your target branch name if different
+- main  # or your default branch name
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 variables:
-  azureSubscription: 'azure-connection'  # Azure service connection
-  appName: 'your-backend-app-name'  # Azure App Service name for backend
-  resourceGroup: 'your-resource-group'  # Resource group name
-  backendDir: 'click2LearnBackend'  # Path to backend directory
+  # Set your Angular project path
+  angularPath: 'click2LearnInstructorClient'
+  # Set your .NET project path
+  dotnetPath: 'click2learnserver'
 
 steps:
-  # Setup Node.js environment
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '16.x'
 
-  # Install dependencies for backend
-  - script: |
-      cd $(backendDir)  # Navigate to backend directory
-      npm install
-    displayName: 'Install Dependencies for Backend'
+# Install Node.js for Angular
+- task: UseNode@2
+  inputs:
+    versionSpec: '16.x'
+  displayName: 'Install Node.js'
 
-  # Build backend (use npm start, as webpack isn't needed for backend)
-  - script: |
-      cd $(backendDir)  # Navigate to backend directory
-      npm start  # Or use `npm run build` if a build step is required
-    displayName: 'Build Backend (npm start)'
+# Install Angular dependencies
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDirectory: $(angularPath)
+  displayName: 'Install Angular dependencies'
 
-  # Test MongoDB Connection
-  - script: |
-      echo "Testing MongoDB Connection..."
-      timeout 10s bash -c 'while ! nc -z click2learn.sqpcc.mongodb.net 27017; do echo "Waiting for MongoDB..."; sleep 2; done'
-      echo "MongoDB is reachable!"
-    displayName: 'Check MongoDB Connectivity'
+# Build Angular project
+- task: Npm@1
+  inputs:
+    command: 'run build --if-present'
+    workingDirectory: $(angularPath)
+  displayName: 'Build Angular project'
 
-  # Publish build artifacts for backend
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathToPublish: '$(Build.SourcesDirectory)/$(backendDir)'  # Publish backend files
-      artifactName: 'backend'
-      publishLocation: 'Container'
+# Publish Angular build files (optional)
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(angularPath)/dist'
+    ArtifactName: 'angularBuild'
+    publishLocation: 'Container'
+  displayName: 'Publish Angular build'
 
-  # Deploy Backend to Azure App Service
-  - task: AzureWebApp@1
-    inputs:
-      azureSubscription: ""  # Azure service connection
-      appName: $(appName)  # Azure App Service name for backend
-      package: '$(System.DefaultWorkingDirectory)/$(backendDir)'  # Path to backend to deploy
-    displayName: 'Deploy Backend to Azure App Service'
+# Install .NET SDK
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '6.x'
+  displayName: 'Install .NET 6 SDK'
+
+# Restore .NET dependencies
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    projects: $(dotnetPath)/click2learnserver.csproj
+  displayName: 'Restore .NET dependencies'
+
+# Build .NET project
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: $(dotnetPath)/click2learnserver.csproj
+  displayName: 'Build .NET project'
+
+# Run .NET tests (optional)
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: $(dotnetPath)/click2learnserver.csproj
+  displayName: 'Run .NET tests'
+
+# Publish .NET build artifacts (optional)
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(dotnetPath)/bin/$(BuildConfiguration)/net6.0/publish'
+    ArtifactName: 'dotnetBuild'
+    publishLocation: 'Container'
+  displayName: 'Publish .NET build'
+
+# Deploy Angular and .NET (example: to Azure Web Apps)
+# Add deployment tasks here if needed (e.g., Azure App Service deploy tasks)
