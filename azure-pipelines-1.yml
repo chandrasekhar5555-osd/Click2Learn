@@ -1,0 +1,124 @@
+trigger:
+  - master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  angularPath: 'click2LearnInstructorClient'
+  dotnetPath: 'click2learnserver'
+
+jobs:
+# ========================= CI JOB =========================
+- job: CI
+  displayName: 'Continuous Integration'
+  steps:
+
+  # Install Node.js
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '16.x'
+    displayName: 'Install Node.js'
+
+  # Install Angular dependencies
+  - script: |
+      cd $(angularPath)
+      npm install
+    displayName: 'Install Angular dependencies'
+
+  # Build Angular project
+  - script: |
+      cd $(angularPath)
+      npm run build -- --configuration=production
+    displayName: 'Build Angular project'
+
+  # Publish Angular build artifacts
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(angularPath)/dist/click2-learn-instructor-client'
+      ArtifactName: 'angularBuild'
+      publishLocation: 'Container'
+    displayName: 'Publish Angular Build'
+
+  # Install .NET SDK
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'sdk'
+      version: '6.x'
+    displayName: 'Install .NET 6 SDK'
+
+  # Restore .NET dependencies
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'restore'
+      projects: '$(dotnetPath)/**/*.csproj'
+    displayName: 'Restore .NET dependencies'
+
+  # Build .NET project
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+      projects: '$(dotnetPath)/**/*.csproj'
+    displayName: 'Build .NET project'
+
+  # Run .NET tests
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'test'
+      projects: '$(dotnetPath)/**/*.csproj'
+    displayName: 'Run .NET tests'
+
+  # Publish .NET build artifacts
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'publish'
+      projects: '$(dotnetPath)/**/*.csproj'
+      arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
+    displayName: 'Publish .NET build'
+
+  # Publish .NET build artifacts
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'dotnetBuild'
+      publishLocation: 'Container'
+    displayName: 'Publish .NET Build Artifacts'
+
+
+# ========================= CD JOB =========================
+- job: CD
+  displayName: 'Continuous Deployment'
+  dependsOn: CI  # Ensure CI job completes before deployment
+  steps:
+
+  # Download Angular artifacts
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: 'angularBuild'
+      downloadPath: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Download Angular Build'
+
+  # Download .NET artifacts
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: 'dotnetBuild'
+      downloadPath: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Download .NET Build'
+
+  # Deploy .NET to Azure App Service
+  - task: AzureWebApp@1
+    inputs:
+      azureSubscription: 'click2learnserviceconnection'
+      appName: 'functionnclick2learm'  # Replace with your actual App Service name
+      package: '$(Build.ArtifactStagingDirectory)'  # Ensure correct path to the publish output
+    displayName: 'Deploy .NET API to Azure App Service'
+
+  # Deploy Angular to Azure Blob Storage
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'click2learnserviceconnection'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        az storage blob upload-batch -d '$web' --account-name 'emailservices9' -s '$(Build.ArtifactStagingDirectory)/angularBuild'
+    displayName: 'Deploy Angular to Azure Storage'
