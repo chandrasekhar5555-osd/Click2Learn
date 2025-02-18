@@ -66,10 +66,26 @@ stages:
     #     package: '$(Build.ArtifactStagingDirectory)'
     #   displayName: 'Deploy Angular App to Azure'
     
-    - task: AzureWebApp@1
-      inputs:
-        appName: 'clic2learn-ui'
-        package: '$(Build.ArtifactStagingDirectory)/angularBuild'
-        deploymentMethod: 'ZipDeploy'
-        publishProfile: $(PublishProfile) 
+    # - task: AzureWebApp@1
+    #   inputs:
+    #     appName: 'clic2learn-ui'
+    #     package: '$(Build.ArtifactStagingDirectory)/angularBuild'
+    #     deploymentMethod: 'ZipDeploy'
+    #     publishProfile: $(PublishProfile) 
+    #   displayName: 'Deploy Angular App using Publish Profile'
+
+    - task: AzureCLI@2
       displayName: 'Deploy Angular App using Publish Profile'
+      inputs:
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az login --identity
+          az account set --subscription "$"(SubscriptionID)  # Set your subscription directly
+          echo "$(PublishProfile)" > publishProfile.xml
+          az webapp deployment source config-zip \
+            --resource-group "click2learn" \
+            --name "clic2learn-ui" \
+            --src "$(Build.ArtifactStagingDirectory)/angularBuild.zip" \
+            --slot production \
+            --publish-profile publishProfile.xml
