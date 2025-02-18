@@ -1,0 +1,67 @@
+trigger:
+  - master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  angularPath: 'click2LearnInstructorClient'
+
+stages:
+# ========================= FRONTEND CI STAGE =========================
+- stage: CI
+  displayName: 'Frontend Continuous Integration'
+  jobs:
+  - job: Frontend_CI
+    displayName: 'Build Angular App'
+    steps:
+
+    # Install Node.js
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '16.x'
+      displayName: 'Install Node.js'
+
+    # Install Angular dependencies
+    - script: |
+        cd $(angularPath)
+        npm install
+      displayName: 'Install Angular dependencies'
+
+    # Build Angular project
+    - script: |
+        cd $(angularPath)
+        npm run build -- --configuration=production
+      displayName: 'Build Angular project'
+
+    # Publish Angular build artifacts
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(angularPath)/dist/click2-learn-instructor-client'
+        ArtifactName: 'angularBuild'
+        publishLocation: 'Container'
+      displayName: 'Publish Angular Build'
+
+# ========================= FRONTEND CD STAGE =========================
+- stage: CD
+  displayName: 'Frontend Continuous Deployment'
+  dependsOn: CI
+  jobs:
+  - job: Frontend_CD
+    displayName: 'Deploy Angular App'
+    steps:
+
+    # Download Angular artifacts
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        artifactName: 'angularBuild'
+        downloadPath: '$(Build.ArtifactStagingDirectory)'
+      displayName: 'Download Angular Build'
+
+    # Deploy Angular to Azure App Service
+    - task: AzureWebApp@1
+      inputs:
+        azureSubscription: 'click2learnserviceconnection'
+        appName: 'click2learn-ui'
+        package: '$(Build.ArtifactStagingDirectory)'
+      displayName: 'Deploy Angular App to Azure'
