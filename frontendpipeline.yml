@@ -59,9 +59,17 @@ stages:
       displayName: 'Download Angular Build'
 
     # Deploy Angular to Azure App Service
+    # - task: AzureWebApp@1
+    #   inputs:
+    #     azureSubscription: 'click2learnserviceconnection'
+    #     appName: 'clic2learn-ui'
+    #     package: '$(Build.ArtifactStagingDirectory)'
+    #   displayName: 'Deploy Angular App to Azure'
+    
     - task: AzureWebApp@1
       inputs:
-        azureSubscription: 'click2learnserviceconnection'
         appName: 'clic2learn-ui'
-        package: '$(Build.ArtifactStagingDirectory)'
-      displayName: 'Deploy Angular App to Azure'
+        package: '$(Build.ArtifactStagingDirectory)/angularBuild'
+        deploymentMethod: 'ZipDeploy'
+        publishProfile: $(PublishProfile) 
+      displayName: 'Deploy Angular App using Publish Profile'
