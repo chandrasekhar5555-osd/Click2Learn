@@ -62,6 +62,6 @@ stages:
     - task: AzureWebApp@1
       inputs:
         azureSubscription: 'click2learnserviceconnection'
-        appName: 'click2learn-ui'
+        appName: 'clic2learn-ui'
         package: '$(Build.ArtifactStagingDirectory)'
       displayName: 'Deploy Angular App to Azure'
