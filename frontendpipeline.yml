@@ -16,25 +16,21 @@ stages:
     displayName: 'Build Angular App'
     steps:
 
-    # Install Node.js
     - task: NodeTool@0
       inputs:
         versionSpec: '16.x'
       displayName: 'Install Node.js'
 
-    # Install Angular dependencies
     - script: |
         cd $(angularPath)
         npm install
       displayName: 'Install Angular dependencies'
 
-    # Build Angular project
     - script: |
         cd $(angularPath)
         npm run build -- --configuration=production
       displayName: 'Build Angular project'
 
-    # Publish Angular build artifacts
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(angularPath)/dist/click2-learn-instructor-client'
@@ -43,55 +39,6 @@ stages:
       displayName: 'Publish Angular Build'
 
 # ========================= FRONTEND CD STAGE =========================
-# - stage: CD
-#   displayName: 'Frontend Continuous Deployment'
-#   dependsOn: CI
-#   jobs:
-#   - job: Frontend_CD
-#     displayName: 'Deploy Angular App'
-#     steps:
-
-#     # Download Angular artifacts
-#     - task: DownloadBuildArtifacts@0
-#       inputs:
-#         artifactName: 'angularBuild'
-#         downloadPath: '$(Build.ArtifactStagingDirectory)'
-#       displayName: 'Download Angular Build'
-
-    # Deploy Angular to Azure App Service
-    # - task: AzureWebApp@1
-    #   inputs:
-    #     azureSubscription: 'click2learnserviceconnection'
-    #     appName: 'clic2learn-ui'
-    #     package: '$(Build.ArtifactStagingDirectory)'
-    #   displayName: 'Deploy Angular App to Azure'
-    
-    # - task: AzureWebApp@1
-    #   inputs:
-    #     appName: 'clic2learn-ui'
-    #     package: '$(Build.ArtifactStagingDirectory)/angularBuild'
-    #     deploymentMethod: 'ZipDeploy'
-    #     publishProfile: $(PublishProfile) 
-    #   displayName: 'Deploy Angular App using Publish Profile'
-
-    # - task: AzureCLI@2
-    #   displayName: 'Deploy Angular App using Publish Profile'
-    #   inputs:
-    #     scriptType: 'bash'
-    #     scriptLocation: 'inlineScript'
-    #     inlineScript: |
-    #       az login --identity
-    #       az account set --subscription "$(SubscriptionID)"  # Set your subscription directly
-    #       echo "$(PublishProfile)" > publishProfile.xml
-    #       az webapp deployment source config-zip \
-    #         --resource-group "click2learn" \
-    #         --name "clic2learn-ui" \
-    #         --src "$(Build.ArtifactStagingDirectory)/angularBuild.zip" \
-    #         --slot production \
-    #         --publish-profile publishProfile.xml
-
-
-
 - stage: Release
   displayName: 'Deploy to Development'
   dependsOn: Build
@@ -105,11 +52,17 @@ stages:
       runOnce:
         deploy:
           steps:
+          - task: DownloadBuildArtifacts@0
+            displayName: 'Download Angular Build'
+            inputs:
+              artifactName: 'angularBuild'
+              downloadPath: '$(Pipeline.Workspace)'
+
           - task: AzureWebApp@1
             displayName: 'Deploy App Service'
             inputs:
               azureSubscription: 'Azure subscription 1(aef278c8-489c-4b12-9673-67f8b443eec9)'
               appType: 'webAppLinux'
               appName: 'clic2learn-ui'
-              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+              package: '$(Pipeline.Workspace)/angularBuild'
               runtimeStack: 'NODE|16-lts'
