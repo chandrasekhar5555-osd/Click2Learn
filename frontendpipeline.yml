@@ -6,6 +6,7 @@ pool:
 
 variables:
   angularPath: 'click2LearnInstructorClient'
+  distPath: 'click2LearnInstructorClient/dist/click2-learn-instructor-client'
 
 stages:
 # ========================= FRONTEND CI STAGE =========================
@@ -28,12 +29,12 @@ stages:
 
     - script: |
         cd $(angularPath)
-        npm run build -- --configuration=production
+        npm run build -- --configuration=production --output-path=$(distPath)
       displayName: 'Build Angular project'
 
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: '$(angularPath)/dist/click2-learn-instructor-client'
+        PathtoPublish: '$(distPath)'
         ArtifactName: 'angularBuild'
         publishLocation: 'Container'
       displayName: 'Publish Angular Build'
@@ -56,10 +57,13 @@ stages:
             displayName: 'Download Angular Build'
             inputs:
               artifactName: 'angularBuild'
-              downloadPath: '$(Pipeline.Workspace)'
+              downloadPath: '$(Pipeline.Workspace)/angularBuild'
+
+          - script: ls -R $(Pipeline.Workspace)/angularBuild
+            displayName: 'Verify Downloaded Files'
 
           - task: AzureWebApp@1
-            displayName: 'Deploy App Service'
+            displayName: 'Deploy to Azure App Service'
             inputs:
               azureSubscription: 'Azure subscription 1(aef278c8-489c-4b12-9673-67f8b443eec9)'
               appType: 'webAppLinux'
