@@ -1,42 +1,45 @@
 trigger:
-  - master
+- master
 
 pool:
   vmImage: 'windows-latest'
 
-variables:
-  angularPath: 'click2LearnInstructorClient'
-
 stages:
-# ========================= FRONTEND CI STAGE =========================
 - stage: Build
-  displayName: 'Frontend Continuous Integration'
+  displayName: Build stage
   jobs:
-  - job: Frontend_CI
-    displayName: 'Build Angular App'
+  - job: Build
+    pool:
+      vmImage: 'windows-latest'
     steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '16.x'
+        displayName: 'Install Node.js 16.x'
 
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '16.x'
-      displayName: 'Install Node.js'
+      - script: |
+          cd click2LearnInstructorClient
+          npm install -g @angular/cli
+          npm install
+          ng build --configuration=production
+        displayName: 'npm install and build'
+        workingDirectory: '$(Build.SourcesDirectory)'
 
-    - script: |
-        cd $(angularPath)
-        npm install
-      displayName: 'Install Angular dependencies'
+      - task: ArchiveFiles@2
+        displayName: 'Archive files'
+        inputs:
+          rootFolderOrFile: '$(Build.SourcesDirectory)/click2LearnInstructorClient/dist/click2-learn-instructor-client'
+          includeRootFolder: false
+          archiveType: zip
+          archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+          replaceExistingArchive: true
 
-    - script: |
-        cd $(angularPath)
-        npm run build -- --configuration=production
-      displayName: 'Build Angular project'
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+          ArtifactName: 'click2learn-ui'
+          publishLocation: 'Container'
 
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(angularPath)/dist/click2-learn-instructor-client'
-        ArtifactName: 'angularBuild'
-        publishLocation: 'Container'
-      displayName: 'Publish Angular Build'
 
 # ========================= FRONTEND CD STAGE =========================
 - stage: Release
