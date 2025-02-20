@@ -29,7 +29,7 @@ stages:
 
     - script: |
         cd $(angularPath)
-        npm run build -- --configuration=production --output-path=$(distPath)
+        npm run build --configuration=production
       displayName: 'Build Angular project'
 
     - task: PublishBuildArtifacts@1
